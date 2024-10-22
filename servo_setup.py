@@ -44,9 +44,9 @@ label_font = font.Font(family="Helvetica", size=12, weight="bold")
 button_font = font.Font(family="Helvetica", size=10, weight="bold")
 
 # Variables para las coordenadas
-x_var = tk.IntVar(value=0)
+x_var = tk.IntVar(value=-155)
 y_var = tk.IntVar(value=0)
-z_var = tk.IntVar(value=0)
+z_var = tk.IntVar(value=-70)
 
 # Etiquetas y campos para coordenadas
 tk.Label(window, text="Coordenadas", bg="#2E2E2E", fg="#FFFFFF", font=label_font).pack(pady=10)
@@ -72,7 +72,7 @@ tk.Entry(frame, textvariable=z_var, width=5).grid(row=2, column=1)
 tk.Button(frame, text="+", command=lambda: z_var.set(z_var.get() + 1), bg="#4CAF50", fg="white", font=button_font, width=3).grid(row=2, column=2, padx=(5, 0))
 tk.Button(frame, text="-", command=lambda: z_var.set(z_var.get() - 1), bg="#F44336", fg="white", font=button_font, width=3).grid(row=2, column=3, padx=(5, 0))
 
-# Botón para actualizar coordenadas a la derecha de Y, un poco más arriba
+# Botón para actualizar coordenadas a la derecha de Y, un poco más arriba y centrado
 update_button = tk.Button(frame, text="Actualizar", command=update_coordinates, bg="#2196F3", fg="white", font=button_font, width=10)
 update_button.grid(row=1, column=4, padx=(10, 0))
 
