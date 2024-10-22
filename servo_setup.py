@@ -16,6 +16,7 @@ def connect_to_port():
             ser = serial.Serial(selected_port, baudrate=115200, timeout=1)
             print(f"Conexión exitosa al puerto {selected_port}")
             status_label.config(text=f"Conectado a {selected_port}", fg="green")
+            error_label.config(text="")  # Limpiar el mensaje de error
         except serial.SerialException as e:
             print(f"Error al abrir el puerto serial: {e}")
             status_label.config(text=f"Error: {e}", fg="red")
@@ -26,16 +27,21 @@ def send_message(ser, message):
     return ser.read_all().decode('utf-8', errors='replace').strip()
 
 def update_coordinates():
-    x = x_var.get()
-    y = y_var.get()
-    z = z_var.get()
-    command = f"{x},{y},{z}"
-    response = send_message(ser, command)
-    print("ESP32 >", response)
+    # Verificar si hay una conexión antes de enviar los datos
+    if ser is None or not ser.is_open:
+        error_label.config(text="Error: conecta el puerto COMX primero.", fg="red")
+    else:
+        x = x_var.get()
+        y = y_var.get()
+        z = z_var.get()
+        command = f"{x},{y},{z}"
+        response = send_message(ser, command)
+        print("ESP32 >", response)
+        error_label.config(text="")  # Limpiar cualquier mensaje de error
 
 # Configuración de la ventana principal
 window = tk.Tk()
-window.title("Controlador de Servomotor")
+window.title("Inverse kinematics Tester  -  HEXA Robotics")
 window.geometry("400x400")
 window.configure(bg="#2E2E2E")  # Color de fondo oscuro
 
@@ -75,6 +81,10 @@ tk.Button(frame, text="-", command=lambda: z_var.set(z_var.get() - 1), bg="#F443
 # Botón para actualizar coordenadas a la derecha de Y, un poco más arriba y centrado
 update_button = tk.Button(frame, text="Actualizar", command=update_coordinates, bg="#2196F3", fg="white", font=button_font, width=10)
 update_button.grid(row=1, column=4, padx=(10, 0))
+
+# Label para mensajes de error
+error_label = tk.Label(window, text="", bg="#2E2E2E", fg="red", font=button_font)
+error_label.pack(pady=5)
 
 # Selector de puerto
 tk.Label(window, text="Selecciona el puerto COM:", bg="#2E2E2E", fg="#FFFFFF", font=label_font).pack(pady=10)
