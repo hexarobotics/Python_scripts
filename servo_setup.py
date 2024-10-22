@@ -2,29 +2,27 @@ import serial
 import serial.tools.list_ports
 import time
 import tkinter as tk
-from tkinter import font
+from tkinter import font, ttk
 
 def list_ports():
     ports = list(serial.tools.list_ports.comports())
-    print("Puertos COM disponibles:", "\n".join(f"{i}: {p.device} - {p.description}" for i, p in enumerate(ports)))
-    return ports
+    return [p.device for p in ports]
 
-def connect_to_port(ports):
-    if ports:
-        port = ports[0].device if len(ports) == 1 else ports[int(input(f"Selecciona el puerto (0-{len(ports) - 1}): "))].device
+def connect_to_port():
+    selected_port = port_combobox.get()
+    if selected_port:
         try:
-            ser = serial.Serial(port, baudrate=115200, timeout=1)
-            print(f"Conexión exitosa al puerto {port}")
-            return ser
+            global ser  # Hacer la variable ser global para usarla en otras funciones
+            ser = serial.Serial(selected_port, baudrate=115200, timeout=1)
+            print(f"Conexión exitosa al puerto {selected_port}")
+            status_label.config(text=f"Conectado a {selected_port}", fg="green")
         except serial.SerialException as e:
             print(f"Error al abrir el puerto serial: {e}")
-    else:
-        print("No se encontraron puertos COM disponibles.")
-    return None
+            status_label.config(text=f"Error: {e}", fg="red")
 
 def send_message(ser, message):
     ser.write(message.encode())
-    time.sleep(0.1)
+    time.sleep(0.2)
     return ser.read_all().decode('utf-8', errors='replace').strip()
 
 def update_coordinates():
@@ -38,7 +36,7 @@ def update_coordinates():
 # Configuración de la ventana principal
 window = tk.Tk()
 window.title("Controlador de Servomotor")
-window.geometry("400x300")
+window.geometry("400x400")
 window.configure(bg="#2E2E2E")  # Color de fondo oscuro
 
 # Estilo de la fuente
@@ -74,11 +72,24 @@ tk.Entry(frame, textvariable=z_var, width=5).grid(row=2, column=1)
 tk.Button(frame, text="+", command=lambda: z_var.set(z_var.get() + 1), bg="#4CAF50", fg="white", font=button_font, width=3).grid(row=2, column=2, padx=(5, 0))
 tk.Button(frame, text="-", command=lambda: z_var.set(z_var.get() - 1), bg="#F44336", fg="white", font=button_font, width=3).grid(row=2, column=3, padx=(5, 0))
 
+# Selector de puerto
+tk.Label(window, text="Selecciona el puerto COM:", bg="#2E2E2E", fg="#FFFFFF", font=label_font).pack(pady=10)
+port_combobox = ttk.Combobox(window, values=list_ports(), width=20)
+port_combobox.pack(pady=5)
+
+# Botón para conectar al puerto
+connect_button = tk.Button(window, text="Conectar", command=connect_to_port, bg="#2196F3", fg="white", font=button_font)
+connect_button.pack(pady=10)
+
+# Etiqueta para mostrar el estado de conexión
+status_label = tk.Label(window, text="Desconectado", bg="#2E2E2E", fg="red", font=label_font)
+status_label.pack(pady=5)
+
 # Botón para actualizar las coordenadas
 update_button = tk.Button(window, text="Actualizar Coordenadas", command=update_coordinates, bg="#2196F3", fg="white", font=button_font, width=20)
 update_button.pack(pady=20)
 
-ser = connect_to_port(list_ports())
+ser = None  # Inicializar la variable ser
 
 # Loop principal de la interfaz
 window.mainloop()
