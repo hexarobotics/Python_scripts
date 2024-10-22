@@ -57,30 +57,31 @@ def main():
         global x_var, y_var, z_var  # Usar variables globales para las coordenadas
         root = tk.Tk()  # Crear la ventana principal
         root.title("Control de Coordenadas")
+        root.geometry("400x300")  # Ajustar el tamaño inicial de la ventana
 
         x_var = tk.IntVar(value=0)
         y_var = tk.IntVar(value=0)
         z_var = tk.IntVar(value=0)
 
         # Campos de coordenadas
-        tk.Label(root, text="Coordenadas").grid(row=0, columnspan=4)
+        tk.Label(root, text="Coordenadas", font=("Arial", 16)).grid(row=0, columnspan=4)
 
-        tk.Label(root, text="X:").grid(row=1, column=0)
-        tk.Label(root, textvariable=x_var).grid(row=1, column=1)
-        tk.Button(root, text="+", command=increment_x).grid(row=1, column=2)
-        tk.Button(root, text="-", command=decrement_x).grid(row=1, column=3)
+        tk.Label(root, text="X:", font=("Arial", 14)).grid(row=1, column=0)
+        tk.Label(root, textvariable=x_var, font=("Arial", 14)).grid(row=1, column=1)
+        tk.Button(root, text="+", command=increment_x, font=("Arial", 14)).grid(row=1, column=2)
+        tk.Button(root, text="-", command=decrement_x, font=("Arial", 14)).grid(row=1, column=3)
 
-        tk.Label(root, text="Y:").grid(row=2, column=0)
-        tk.Label(root, textvariable=y_var).grid(row=2, column=1)
-        tk.Button(root, text="+", command=increment_y).grid(row=2, column=2)
-        tk.Button(root, text="-", command=decrement_y).grid(row=2, column=3)
+        tk.Label(root, text="Y:", font=("Arial", 14)).grid(row=2, column=0)
+        tk.Label(root, textvariable=y_var, font=("Arial", 14)).grid(row=2, column=1)
+        tk.Button(root, text="+", command=increment_y, font=("Arial", 14)).grid(row=2, column=2)
+        tk.Button(root, text="-", command=decrement_y, font=("Arial", 14)).grid(row=2, column=3)
 
-        tk.Label(root, text="Z:").grid(row=3, column=0)
-        tk.Label(root, textvariable=z_var).grid(row=3, column=1)
-        tk.Button(root, text="+", command=increment_z).grid(row=3, column=2)
-        tk.Button(root, text="-", command=decrement_z).grid(row=3, column=3)
+        tk.Label(root, text="Z:", font=("Arial", 14)).grid(row=3, column=0)
+        tk.Label(root, textvariable=z_var, font=("Arial", 14)).grid(row=3, column=1)
+        tk.Button(root, text="+", command=increment_z, font=("Arial", 14)).grid(row=3, column=2)
+        tk.Button(root, text="-", command=decrement_z, font=("Arial", 14)).grid(row=3, column=3)
 
-        tk.Button(root, text="Actualizar", command=send_coordinates).grid(row=4, columnspan=4)
+        tk.Button(root, text="Actualizar", command=send_coordinates, font=("Arial", 16)).grid(row=4, columnspan=4, pady=10)
 
         # Ciclo principal de la interfaz
         root.mainloop()
