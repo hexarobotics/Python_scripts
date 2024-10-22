@@ -38,8 +38,12 @@ def send_message(ser, message):
     ser.write(message.encode())
     
     # Espera la respuesta del ESP32
-    time.sleep(0.1)
-    response = ser.read_all().decode('utf-8')
+    time.sleep(0.2)
+    
+    # Leer la respuesta del ESP32
+    response_bytes = ser.read_all()
+    #print(f"Datos recibidos (hex): {[hex(b) for b in response_bytes]}")  # Impresión de bytes en formato hexadecimal
+    response = response_bytes.decode('utf-8', errors='replace').strip()  # Manejo de errores y eliminación de espacios
     return response
 
 def main():
@@ -72,3 +76,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+0
