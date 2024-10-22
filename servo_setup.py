@@ -2,15 +2,14 @@ import serial
 import serial.tools.list_ports
 import time
 import tkinter as tk
+from tkinter import font
 
 def list_ports():
-    # Listar todos los puertos COM disponibles
     ports = list(serial.tools.list_ports.comports())
     print("Puertos COM disponibles:", "\n".join(f"{i}: {p.device} - {p.description}" for i, p in enumerate(ports)))
     return ports
 
 def connect_to_port(ports):
-    # Conexión al puerto seleccionado
     if ports:
         port = ports[0].device if len(ports) == 1 else ports[int(input(f"Selecciona el puerto (0-{len(ports) - 1}): "))].device
         try:
@@ -23,11 +22,52 @@ def connect_to_port(ports):
         print("No se encontraron puertos COM disponibles.")
     return None
 
-def send_coordinates():
-    # Enviar coordenadas al ESP32
-    coordinates = f"{x_var.get()},{y_var.get()},{z_var.get()}\n"  # Formato: x,y,z
-    ser.write(coordinates.encode())
-    print(f"Enviando: {coordinates.strip()}")  # Mostrar en consola
+def send_message(ser, message):
+    ser.write(message.encode())
+    time.sleep(0.2)
+    return ser.read_all().decode('utf-8', errors='replace').strip()
+
+def update_coordinates():
+    x = x_var.get()
+    y = y_var.get()
+    z = z_var.get()
+    command = f"{x},{y},{z}"
+    response = send_message(ser, command)
+    print("ESP32 >", response)
+
+# Configuración de la ventana principal
+window = tk.Tk()
+window.title("Controlador de Servomotor")
+window.geometry("400x300")
+window.configure(bg="#2E2E2E")  # Color de fondo oscuro
+
+# Estilo de la fuente
+label_font = font.Font(family="Helvetica", size=12, weight="bold")
+button_font = font.Font(family="Helvetica", size=10, weight="bold")
+
+# Variables para las coordenadas
+x_var = tk.IntVar(value=0)
+y_var = tk.IntVar(value=0)
+z_var = tk.IntVar(value=0)
+
+# Etiquetas y campos para coordenadas
+tk.Label(window, text="Coordenadas", bg="#2E2E2E", fg="#FFFFFF", font=label_font).pack(pady=10)
+
+frame = tk.Frame(window, bg="#2E2E2E")
+frame.pack(pady=10)
+
+tk.Label(frame, text="X:", bg="#2E2E2E", fg="#FFFFFF", font=label_font).grid(row=0, column=0)
+tk.Entry(frame, textvariable=x_var, width=5).grid(row=0, column=1)
+
+tk.Label(frame, text="Y:", bg="#2E2E2E", fg="#FFFFFF", font=label_font).grid(row=1, column=0)
+tk.Entry(frame, textvariable=y_var, width=5).grid(row=1, column=1)
+
+tk.Label(frame, text="Z:", bg="#2E2E2E", fg="#FFFFFF", font=label_font).grid(row=2, column=0)
+tk.Entry(frame, textvariable=z_var, width=5).grid(row=2, column=1)
+
+# Botones para incrementar y decrementar
+button_frame = tk.Frame(window, bg="#2E2E2E")
+button_frame.pack(pady=10)
 
 def increment_x():
     x_var.set(x_var.get() + 1)
@@ -47,49 +87,20 @@ def increment_z():
 def decrement_z():
     z_var.set(z_var.get() - 1)
 
-def main():
-    # Configuración de la ventana principal
-    ports = list_ports()
-    global ser  # Usar la variable ser como global
-    ser = connect_to_port(ports)
+tk.Button(button_frame, text="+", command=increment_x, bg="#4CAF50", fg="white", font=button_font, width=5).grid(row=0, column=2)
+tk.Button(button_frame, text="-", command=decrement_x, bg="#F44336", fg="white", font=button_font, width=5).grid(row=0, column=3)
 
-    if ser:
-        global x_var, y_var, z_var  # Usar variables globales para las coordenadas
-        root = tk.Tk()  # Crear la ventana principal
-        root.title("Control de Coordenadas")
-        root.geometry("400x300")  # Ajustar el tamaño inicial de la ventana
+tk.Button(button_frame, text="+", command=increment_y, bg="#4CAF50", fg="white", font=button_font, width=5).grid(row=1, column=2)
+tk.Button(button_frame, text="-", command=decrement_y, bg="#F44336", fg="white", font=button_font, width=5).grid(row=1, column=3)
 
-        x_var = tk.IntVar(value=0)
-        y_var = tk.IntVar(value=0)
-        z_var = tk.IntVar(value=0)
+tk.Button(button_frame, text="+", command=increment_z, bg="#4CAF50", fg="white", font=button_font, width=5).grid(row=2, column=2)
+tk.Button(button_frame, text="-", command=decrement_z, bg="#F44336", fg="white", font=button_font, width=5).grid(row=2, column=3)
 
-        # Campos de coordenadas
-        tk.Label(root, text="Coordenadas", font=("Arial", 16)).grid(row=0, columnspan=4)
+# Botón para actualizar las coordenadas
+update_button = tk.Button(window, text="Actualizar Coordenadas", command=update_coordinates, bg="#2196F3", fg="white", font=button_font, width=20)
+update_button.pack(pady=20)
 
-        tk.Label(root, text="X:", font=("Arial", 14)).grid(row=1, column=0)
-        tk.Label(root, textvariable=x_var, font=("Arial", 14)).grid(row=1, column=1)
-        tk.Button(root, text="+", command=increment_x, font=("Arial", 14)).grid(row=1, column=2)
-        tk.Button(root, text="-", command=decrement_x, font=("Arial", 14)).grid(row=1, column=3)
+ser = connect_to_port(list_ports())
 
-        tk.Label(root, text="Y:", font=("Arial", 14)).grid(row=2, column=0)
-        tk.Label(root, textvariable=y_var, font=("Arial", 14)).grid(row=2, column=1)
-        tk.Button(root, text="+", command=increment_y, font=("Arial", 14)).grid(row=2, column=2)
-        tk.Button(root, text="-", command=decrement_y, font=("Arial", 14)).grid(row=2, column=3)
-
-        tk.Label(root, text="Z:", font=("Arial", 14)).grid(row=3, column=0)
-        tk.Label(root, textvariable=z_var, font=("Arial", 14)).grid(row=3, column=1)
-        tk.Button(root, text="+", command=increment_z, font=("Arial", 14)).grid(row=3, column=2)
-        tk.Button(root, text="-", command=decrement_z, font=("Arial", 14)).grid(row=3, column=3)
-
-        tk.Button(root, text="Actualizar", command=send_coordinates, font=("Arial", 16)).grid(row=4, columnspan=4, pady=10)
-
-        # Ciclo principal de la interfaz
-        root.mainloop()
-
-        # Cierre de conexión al finalizar
-        ser.close()
-    else:
-        print("No se pudo conectar al puerto serial.")
-
-if __name__ == "__main__":
-    main()
+# Loop principal de la interfaz
+window.mainloop()
