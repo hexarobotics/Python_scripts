@@ -72,6 +72,10 @@ tk.Entry(frame, textvariable=z_var, width=5).grid(row=2, column=1)
 tk.Button(frame, text="+", command=lambda: z_var.set(z_var.get() + 1), bg="#4CAF50", fg="white", font=button_font, width=3).grid(row=2, column=2, padx=(5, 0))
 tk.Button(frame, text="-", command=lambda: z_var.set(z_var.get() - 1), bg="#F44336", fg="white", font=button_font, width=3).grid(row=2, column=3, padx=(5, 0))
 
+# Botón para actualizar coordenadas al lado de los botones
+update_button = tk.Button(frame, text="Actualizar", command=update_coordinates, bg="#2196F3", fg="white", font=button_font, width=10)
+update_button.grid(row=2, column=4, padx=(10, 0))
+
 # Selector de puerto
 tk.Label(window, text="Selecciona el puerto COM:", bg="#2E2E2E", fg="#FFFFFF", font=label_font).pack(pady=10)
 port_combobox = ttk.Combobox(window, values=list_ports(), width=20)
@@ -84,10 +88,6 @@ connect_button.pack(pady=10)
 # Etiqueta para mostrar el estado de conexión
 status_label = tk.Label(window, text="Desconectado", bg="#2E2E2E", fg="red", font=label_font)
 status_label.pack(pady=5)
-
-# Botón para actualizar las coordenadas
-update_button = tk.Button(window, text="Actualizar Coordenadas", command=update_coordinates, bg="#2196F3", fg="white", font=button_font, width=20)
-update_button.pack(pady=20)
 
 ser = None  # Inicializar la variable ser
 
