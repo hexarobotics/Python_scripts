@@ -24,7 +24,7 @@ def connect_to_port():
 
 def send_message(ser, message):
     ser.write(message)
-    time.sleep(0.1)
+    time.sleep(0.3)
     return ser.read_all().decode('utf-8', errors='replace').strip()
 
 def update_coordinates():
@@ -53,8 +53,8 @@ window.geometry("400x400")
 window.configure(bg="#2E2E2E")  # Color de fondo oscuro
 
 # Estilo de la fuente
-label_font = font.Font(family="Helvetica", size=12, weight="bold")
-button_font = font.Font(family="Helvetica", size=10, weight="bold")
+label_font = font.Font(family="Helvetica", size=18, weight="bold")
+button_font = font.Font(family="Helvetica", size=16, weight="bold")
 
 # Variables para las coordenadas
 x_var = tk.IntVar(value=-155)
