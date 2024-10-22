@@ -72,9 +72,9 @@ tk.Entry(frame, textvariable=z_var, width=5).grid(row=2, column=1)
 tk.Button(frame, text="+", command=lambda: z_var.set(z_var.get() + 1), bg="#4CAF50", fg="white", font=button_font, width=3).grid(row=2, column=2, padx=(5, 0))
 tk.Button(frame, text="-", command=lambda: z_var.set(z_var.get() - 1), bg="#F44336", fg="white", font=button_font, width=3).grid(row=2, column=3, padx=(5, 0))
 
-# Botón para actualizar coordenadas al lado de los botones
+# Botón para actualizar coordenadas a la derecha de Y
 update_button = tk.Button(frame, text="Actualizar", command=update_coordinates, bg="#2196F3", fg="white", font=button_font, width=10)
-update_button.grid(row=2, column=4, padx=(10, 0))
+update_button.grid(row=1, column=4, padx=(10, 0), rowspan=2)
 
 # Selector de puerto
 tk.Label(window, text="Selecciona el puerto COM:", bg="#2E2E2E", fg="#FFFFFF", font=label_font).pack(pady=10)
