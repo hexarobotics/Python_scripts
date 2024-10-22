@@ -24,7 +24,7 @@ def connect_to_port(ports):
 
 def send_message(ser, message):
     ser.write(message.encode())
-    time.sleep(0.2)
+    time.sleep(0.1)
     return ser.read_all().decode('utf-8', errors='replace').strip()
 
 def update_coordinates():
@@ -56,45 +56,23 @@ tk.Label(window, text="Coordenadas", bg="#2E2E2E", fg="#FFFFFF", font=label_font
 frame = tk.Frame(window, bg="#2E2E2E")
 frame.pack(pady=10)
 
+# Fila para X
 tk.Label(frame, text="X:", bg="#2E2E2E", fg="#FFFFFF", font=label_font).grid(row=0, column=0)
 tk.Entry(frame, textvariable=x_var, width=5).grid(row=0, column=1)
+tk.Button(frame, text="+", command=lambda: x_var.set(x_var.get() + 1), bg="#4CAF50", fg="white", font=button_font, width=3).grid(row=0, column=2, padx=(5, 0))
+tk.Button(frame, text="-", command=lambda: x_var.set(x_var.get() - 1), bg="#F44336", fg="white", font=button_font, width=3).grid(row=0, column=3, padx=(5, 0))
 
+# Fila para Y
 tk.Label(frame, text="Y:", bg="#2E2E2E", fg="#FFFFFF", font=label_font).grid(row=1, column=0)
 tk.Entry(frame, textvariable=y_var, width=5).grid(row=1, column=1)
+tk.Button(frame, text="+", command=lambda: y_var.set(y_var.get() + 1), bg="#4CAF50", fg="white", font=button_font, width=3).grid(row=1, column=2, padx=(5, 0))
+tk.Button(frame, text="-", command=lambda: y_var.set(y_var.get() - 1), bg="#F44336", fg="white", font=button_font, width=3).grid(row=1, column=3, padx=(5, 0))
 
+# Fila para Z
 tk.Label(frame, text="Z:", bg="#2E2E2E", fg="#FFFFFF", font=label_font).grid(row=2, column=0)
 tk.Entry(frame, textvariable=z_var, width=5).grid(row=2, column=1)
-
-# Botones para incrementar y decrementar
-button_frame = tk.Frame(window, bg="#2E2E2E")
-button_frame.pack(pady=10)
-
-def increment_x():
-    x_var.set(x_var.get() + 1)
-
-def decrement_x():
-    x_var.set(x_var.get() - 1)
-
-def increment_y():
-    y_var.set(y_var.get() + 1)
-
-def decrement_y():
-    y_var.set(y_var.get() - 1)
-
-def increment_z():
-    z_var.set(z_var.get() + 1)
-
-def decrement_z():
-    z_var.set(z_var.get() - 1)
-
-tk.Button(button_frame, text="+", command=increment_x, bg="#4CAF50", fg="white", font=button_font, width=5).grid(row=0, column=2)
-tk.Button(button_frame, text="-", command=decrement_x, bg="#F44336", fg="white", font=button_font, width=5).grid(row=0, column=3)
-
-tk.Button(button_frame, text="+", command=increment_y, bg="#4CAF50", fg="white", font=button_font, width=5).grid(row=1, column=2)
-tk.Button(button_frame, text="-", command=decrement_y, bg="#F44336", fg="white", font=button_font, width=5).grid(row=1, column=3)
-
-tk.Button(button_frame, text="+", command=increment_z, bg="#4CAF50", fg="white", font=button_font, width=5).grid(row=2, column=2)
-tk.Button(button_frame, text="-", command=decrement_z, bg="#F44336", fg="white", font=button_font, width=5).grid(row=2, column=3)
+tk.Button(frame, text="+", command=lambda: z_var.set(z_var.get() + 1), bg="#4CAF50", fg="white", font=button_font, width=3).grid(row=2, column=2, padx=(5, 0))
+tk.Button(frame, text="-", command=lambda: z_var.set(z_var.get() - 1), bg="#F44336", fg="white", font=button_font, width=3).grid(row=2, column=3, padx=(5, 0))
 
 # Botón para actualizar las coordenadas
 update_button = tk.Button(window, text="Actualizar Coordenadas", command=update_coordinates, bg="#2196F3", fg="white", font=button_font, width=20)
