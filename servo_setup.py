@@ -3,6 +3,7 @@ import serial.tools.list_ports
 import time
 import tkinter as tk
 from tkinter import font, ttk
+import struct
 
 def list_ports():
     ports = list(serial.tools.list_ports.comports())
@@ -22,8 +23,8 @@ def connect_to_port():
             status_label.config(text=f"Error: {e}", fg="red")
 
 def send_message(ser, message):
-    ser.write(message.encode())
-    time.sleep(0.2)
+    ser.write(message)
+    time.sleep(0.1)
     return ser.read_all().decode('utf-8', errors='replace').strip()
 
 def update_coordinates():
@@ -31,12 +32,18 @@ def update_coordinates():
     if ser is None or not ser.is_open:
         error_label.config(text="Error: conecta el puerto COMX primero.", fg="red")
     else:
+        # Formato binario con header y coordenadas en int16_t
+        header = 0xABCD  # Header de 2 bytes
         x = x_var.get()
         y = y_var.get()
         z = z_var.get()
-        command = f"{x},{y},{z}"
-        response = send_message(ser, command)
-        print("ESP32 >", response)
+        # Empaquetar los datos en un total de 8 bytes (2 para el header y 6 para las coordenadas)
+        packet = struct.pack('>Hhhh', header, x, y, z)
+        
+        # Enviar el paquete al ESP32
+        response = send_message(ser, packet)
+        print(f"ESP32 > {response}")
+
         error_label.config(text="")  # Limpiar cualquier mensaje de error
 
 # Configuración de la ventana principal
