@@ -22,7 +22,7 @@ def connect_to_port(ports):
         
         print(f"\nIntentando conectar al puerto: {port}")
         try:
-            ser = serial.Serial(port, baudrate=115200, timeout=1)
+            ser = serial.Serial(port, baudrate=115200, timeout=1, bytesize=serial.EIGHTBITS, parity=serial.PARITY_NONE, stopbits=serial.STOPBITS_ONE)
             print(f"Conexión exitosa al puerto {port}")
             return ser
         except serial.SerialException as e:
