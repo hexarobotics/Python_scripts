@@ -47,43 +47,48 @@ def increment_z():
 def decrement_z():
     z_var.set(z_var.get() - 1)
 
-# Configuración de la ventana principal
-ports = list_ports()
-ser = connect_to_port(ports)
+def main():
+    # Configuración de la ventana principal
+    ports = list_ports()
+    global ser  # Usar la variable ser como global
+    ser = connect_to_port(ports)
 
-if ser:
-    root = tk.Tk()
-    root.title("Control de Coordenadas")
+    if ser:
+        global x_var, y_var, z_var  # Usar variables globales para las coordenadas
+        root = tk.Tk()  # Crear la ventana principal
+        root.title("Control de Coordenadas")
 
-    # Variables para las coordenadas
-    x_var = tk.IntVar(value=0)
-    y_var = tk.IntVar(value=0)
-    z_var = tk.IntVar(value=0)
+        x_var = tk.IntVar(value=0)
+        y_var = tk.IntVar(value=0)
+        z_var = tk.IntVar(value=0)
 
-    # Campos de coordenadas
-    tk.Label(root, text="Coordenadas").grid(row=0, columnspan=4)
+        # Campos de coordenadas
+        tk.Label(root, text="Coordenadas").grid(row=0, columnspan=4)
 
-    tk.Label(root, text="X:").grid(row=1, column=0)
-    tk.Label(root, textvariable=x_var).grid(row=1, column=1)
-    tk.Button(root, text="+", command=increment_x).grid(row=1, column=2)
-    tk.Button(root, text="-", command=decrement_x).grid(row=1, column=3)
+        tk.Label(root, text="X:").grid(row=1, column=0)
+        tk.Label(root, textvariable=x_var).grid(row=1, column=1)
+        tk.Button(root, text="+", command=increment_x).grid(row=1, column=2)
+        tk.Button(root, text="-", command=decrement_x).grid(row=1, column=3)
 
-    tk.Label(root, text="Y:").grid(row=2, column=0)
-    tk.Label(root, textvariable=y_var).grid(row=2, column=1)
-    tk.Button(root, text="+", command=increment_y).grid(row=2, column=2)
-    tk.Button(root, text="-", command=decrement_y).grid(row=2, column=3)
+        tk.Label(root, text="Y:").grid(row=2, column=0)
+        tk.Label(root, textvariable=y_var).grid(row=2, column=1)
+        tk.Button(root, text="+", command=increment_y).grid(row=2, column=2)
+        tk.Button(root, text="-", command=decrement_y).grid(row=2, column=3)
 
-    tk.Label(root, text="Z:").grid(row=3, column=0)
-    tk.Label(root, textvariable=z_var).grid(row=3, column=1)
-    tk.Button(root, text="+", command=increment_z).grid(row=3, column=2)
-    tk.Button(root, text="-", command=decrement_z).grid(row=3, column=3)
+        tk.Label(root, text="Z:").grid(row=3, column=0)
+        tk.Label(root, textvariable=z_var).grid(row=3, column=1)
+        tk.Button(root, text="+", command=increment_z).grid(row=3, column=2)
+        tk.Button(root, text="-", command=decrement_z).grid(row=3, column=3)
 
-    tk.Button(root, text="Actualizar", command=send_coordinates).grid(row=4, columnspan=4)
+        tk.Button(root, text="Actualizar", command=send_coordinates).grid(row=4, columnspan=4)
 
-    # Ciclo principal de la interfaz
-    root.mainloop()
+        # Ciclo principal de la interfaz
+        root.mainloop()
 
-    # Cierre de conexión al finalizar
-    ser.close()
-else:
-    print("No se pudo conectar al puerto serial.")
+        # Cierre de conexión al finalizar
+        ser.close()
+    else:
+        print("No se pudo conectar al puerto serial.")
+
+if __name__ == "__main__":
+    main()
